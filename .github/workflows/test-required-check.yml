@@ -1,0 +1,24 @@
+name: Test Required Check
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  required-check:
+    name: test-required-check
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Pass except on the failure demo branch
+        env:
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if [ "$PR_HEAD_REF" = "test/failed-status" ]; then
+            echo "Intentional failure for the Failed status label demo."
+            exit 1
+          fi
+          echo "Required demo check passed."
